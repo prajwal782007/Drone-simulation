@@ -1,0 +1,236 @@
+.app-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 60px 1fr 250px;
+  gap: 16px;
+  height: 100vh;
+  width: 100vw;
+  padding: 16px;
+  grid-template-areas:
+    "top top"
+    "left right"
+    "bottom bottom";
+}
+
+.top-panel {
+  grid-area: top;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.left-panel {
+  grid-area: left;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.right-panel {
+  grid-area: right;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.bottom-panel {
+  grid-area: bottom;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  overflow: hidden;
+}
+
+/* Titles */
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-size: 1.1rem;
+  color: var(--accent-blue);
+  margin-bottom: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Buttons */
+.controls {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid var(--accent-blue);
+  color: var(--text-main);
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  background: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.btn.active {
+  background: var(--accent-blue);
+  color: var(--bg-dark);
+}
+
+.btn.danger {
+  border-color: var(--accent-red);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.btn.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Status Indicator */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--accent-blue);
+  box-shadow: 0 0 8px var(--accent-blue);
+}
+
+.status-dot.training {
+  background-color: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+  animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+  0% { opacity: 0.5; box-shadow: 0 0 2px var(--accent-green); }
+  100% { opacity: 1; box-shadow: 0 0 12px var(--accent-green); }
+}
+
+/* Dashboard Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stat-card {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-blue);
+}
+
+.stat-value.good { color: var(--accent-green); }
+.stat-value.bad { color: var(--accent-red); }
+.stat-value.neutral { color: var(--text-main); }
+
+/* Log Console */
+.log-console {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  height: calc(100% - 40px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-entry {
+  color: var(--text-muted);
+  word-break: break-all;
+}
+.log-entry .timestamp {
+  color: #64748b;
+  margin-right: 8px;
+}
+.log-entry.info { color: var(--accent-blue); }
+.log-entry.success { color: var(--accent-green); }
+.log-entry.warning { color: var(--accent-orange); }
+.log-entry.error { color: var(--accent-red); }
+
+/* Neural Net / Action Viz */
+.viz-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.action-display {
+  background: rgba(0,0,0,0.3);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--accent-orange);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  transition: all 0.2s;
+}
+
+.lidar-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-green);
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+.lidar-overlay .label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.lidar-overlay .value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-green);
+  font-variant-numeric: tabular-nums;
+}
