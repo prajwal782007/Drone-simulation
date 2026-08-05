@@ -176,26 +176,49 @@ function TargetZone({ state }) {
 function Terrain({ seed, type }) {
   const obstacles = useMemo(() => {
     const arr = [];
-    // Generate some blocks based on seed
-    for(let i=0; i<30; i++) {
+    let numObstacles = 10;
+    let w = 2, h = 2, d = 2;
+    let isBuilding = type === 'Buildings';
+    let isTree = type === 'Trees';
+    
+    if (isBuilding) {
+      numObstacles = 15;
+      w = 4; h = 10; d = 4;
+    } else if (isTree) {
+      numObstacles = 25;
+      w = 1; h = 4; d = 1;
+    } else if (type === 'Random obstacles' || type === 'Concrete' || type === 'Road') {
+      numObstacles = 30;
+      w = 1; h = 1; d = 1;
+    } else if (type === 'Grass' || type === 'Sand' || type === 'Water') {
+      numObstacles = 5; // very few
+      w = 1; h = 0.5; d = 1;
+    }
+
+    for(let i=0; i<numObstacles; i++) {
       arr.push({
         x: (Math.sin(seed * i * 12.3) - 0.5) * 40,
         z: (Math.cos(seed * i * 45.6) - 0.5) * 40,
-        w: 1 + Math.random() * 3,
-        h: 0.2 + Math.random() * 2,
-        d: 1 + Math.random() * 3
+        w: (Math.random() * w) + w/2,
+        h: (Math.random() * h) + h/2,
+        d: (Math.random() * d) + d/2,
+        isTree: isTree
       });
     }
     return arr;
-  }, [seed]);
+  }, [seed, type]);
 
   const color = useMemo(() => {
     switch(type) {
-      case 'Grass': return '#1a2e1a';
-      case 'Rocks': return '#3a3a3a';
-      case 'Sand patches': return '#4a3f2a';
-      case 'Cracks': return '#222';
-      default: return '#1e2430';
+      case 'Grass': return '#1a3e1a'; // Green
+      case 'Road': return '#333333'; // Dark gray
+      case 'Sand': return '#c2b280'; // Sandy
+      case 'Rock': return '#5a5a5a'; // Rocky gray
+      case 'Water': return '#1ca3ec'; // Blue
+      case 'Concrete': return '#7f8c8d'; // Light gray
+      case 'Trees': return '#2e4a19'; // Forest green ground
+      case 'Buildings': return '#222222'; // Dark ground
+      default: return '#1e2430'; // fallback
     }
   }, [type]);
 
@@ -203,14 +226,31 @@ function Terrain({ seed, type }) {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[100, 100]} />
-        <meshStandardMaterial color={color} roughness={0.9} />
+        <meshStandardMaterial color={color} roughness={type === 'Water' ? 0.1 : 0.9} metalness={type === 'Water' ? 0.8 : 0.1} />
       </mesh>
       
       {obstacles.map((obs, i) => (
-        <mesh key={i} position={[obs.x, obs.h/2, obs.z]} castShadow receiveShadow>
-          <boxGeometry args={[obs.w, obs.h, obs.d]} />
-          <meshStandardMaterial color="#2d3748" roughness={0.8} />
-        </mesh>
+        <group key={i} position={[obs.x, 0, obs.z]}>
+          {obs.isTree ? (
+            // Tree
+            <group>
+              <mesh position={[0, obs.h/2, 0]} castShadow receiveShadow>
+                <cylinderGeometry args={[0.2, 0.2, obs.h]} />
+                <meshStandardMaterial color="#3d2817" />
+              </mesh>
+              <mesh position={[0, obs.h, 0]} castShadow receiveShadow>
+                <coneGeometry args={[obs.w * 1.5, obs.h, 8]} />
+                <meshStandardMaterial color="#2d5a27" />
+              </mesh>
+            </group>
+          ) : (
+            // Box obstacle / Building
+            <mesh position={[0, obs.h/2, 0]} castShadow receiveShadow>
+              <boxGeometry args={[obs.w, obs.h, obs.d]} />
+              <meshStandardMaterial color={type === 'Buildings' ? '#111' : '#4a5568'} roughness={0.8} />
+            </mesh>
+          )}
+        </group>
       ))}
 
       <Grid infiniteGrid fadeDistance={40} sectionColor="rgba(56, 189, 248, 0.3)" cellColor="rgba(56, 189, 248, 0.05)" />

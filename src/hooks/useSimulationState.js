@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-const TERRAINS = ['Flat areas', 'Rocks', 'Small hills', 'Uneven surfaces', 'Cracks', 'Sand patches', 'Grass', 'Random obstacles'];
+const TERRAINS = ['Grass', 'Road', 'Sand', 'Rock', 'Water', 'Concrete', 'Trees', 'Buildings', 'Random obstacles'];
 
 export default function useSimulationState() {
   const [isRunning, setIsRunning] = useState(false);
@@ -30,7 +30,7 @@ export default function useSimulationState() {
     successfulLandings: 0,
     crashes: 0,
     hardLandings: 0,
-    terrain: 'Flat areas',
+    terrain: 'Grass',
     droneState: 'hovering', // generating, takeoff, hovering, scanning, moving, descending, landed, crashed
     dronePos: { x: 0, z: 0 },
     targetPos: { x: 0, z: 0 },
