@@ -166,7 +166,7 @@ export default function useSimulationState() {
               slope: Math.random() * 10,
               modelConfidence: bestScore,
               inferenceTime: 1.2 + Math.random(),
-              targetPos: { x: (Math.random() - 0.5) * 8, z: (Math.random() - 0.5) * 8 },
+              targetPos: { x: prev.dronePos.x + (Math.random() - 0.5) * 4, z: prev.dronePos.z + (Math.random() - 0.5) * 4 },
               targetRadius: 1.5
             }));
             await wait(500);
@@ -177,13 +177,22 @@ export default function useSimulationState() {
             const dirs = ['Moving Left', 'Moving Right', 'Moving Forward'];
             const moveAct = dirs[Math.floor(Math.random() * dirs.length)];
             addLog(moveAct, 'info');
-            setState(prev => ({ 
-              ...prev, 
-              droneState: 'moving', 
-              currentAction: moveAct,
-              dronePos: { x: prev.dronePos.x + (Math.random()-0.5)*4, z: prev.dronePos.z + (Math.random()-0.5)*4 }
-            }));
-            await wait(1500);
+            
+            setState(prev => {
+              let newX = prev.dronePos.x;
+              let newZ = prev.dronePos.z;
+              if (moveAct === 'Moving Left') newX -= 4;
+              if (moveAct === 'Moving Right') newX += 4;
+              if (moveAct === 'Moving Forward') newZ -= 4; // assuming -z is forward
+
+              return { 
+                ...prev, 
+                droneState: 'moving', 
+                currentAction: moveAct,
+                dronePos: { x: newX, z: newZ }
+              };
+            });
+            await wait(2000); // Give it time to smoothly fly there
             if (!active) break;
           }
         }
@@ -197,7 +206,7 @@ export default function useSimulationState() {
           currentAction: 'Hover',
           dronePos: { x: prev.targetPos.x, z: prev.targetPos.z }
         }));
-        await wait(1500);
+        await wait(2000); // Give time for smooth translation
         if (!active) break;
 
         // DESCENDING
@@ -205,11 +214,12 @@ export default function useSimulationState() {
         setState(prev => ({ ...prev, droneState: 'descending', currentAction: 'Descend' }));
         
         let alt = 10;
+        // Smooth descent over multiple smaller steps
         while (alt > 2) {
-          alt -= 2;
+          alt -= 1.0;
           addLog(`Altitude: ${alt.toFixed(1)}`, 'info');
-          setState(prev => ({ ...prev, altitude: alt, verticalSpeed: -2, lidarDistance: alt }));
-          await wait(400);
+          setState(prev => ({ ...prev, altitude: alt, verticalSpeed: -1, lidarDistance: alt }));
+          await wait(300);
           if (!active) break;
         }
         if (!active) break;

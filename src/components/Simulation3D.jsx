@@ -328,7 +328,7 @@ export default function Simulation3D({ state }) {
         
         <ContactShadows position={[0, 0, 0]} opacity={0.6} scale={20} blur={2} far={15} />
         
-        <OrbitControls makeDefault target={[0, 5, 0]} autoRotate={state.droneState === 'scanning'} autoRotateSpeed={2} />
+        <CinematicCamera state={state} />
       </Canvas>
     </div>
   );
