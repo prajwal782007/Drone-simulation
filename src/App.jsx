@@ -1,24 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import './App.css';
-import { Play, Pause, RotateCcw, Activity } from 'lucide-react';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 import useSimulationState from './hooks/useSimulationState';
 import Simulation3D from './components/Simulation3D';
 import StatsDashboard from './components/StatsDashboard';
 import LogConsole from './components/LogConsole';
-import Charts from './components/Charts';
 import NeuralNetworkViz from './components/NeuralNetworkViz';
+import SensorFeeds from './components/SensorFeeds';
+import PerceptionPipeline from './components/PerceptionPipeline';
+import DecisionPanel from './components/DecisionPanel';
 
 function App() {
   const { state, actions } = useSimulationState();
 
   return (
     <div className="app-container">
-      {/* Top Panel */}
+      {/* Top Header */}
       <div className="glass-panel top-panel">
         <div>
-          <h1 className="text-gradient">Autonomous Drone RL Training Simulator</h1>
+          <h1 className="text-gradient">Autonomous Drone Vision + LiDAR RL Training System</h1>
           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            LiDAR Assisted Precision Landing
+            Advanced Robotics Simulation Exhibition
           </div>
         </div>
         
@@ -42,40 +44,34 @@ function App() {
         </div>
       </div>
 
-      {/* Left Panel - 3D Simulation */}
-      <div className="glass-panel left-panel scan-effect">
-        <div className="lidar-overlay">
-          <div className="label">LiDAR Distance</div>
-          <div className="value">{state.lidarDistance.toFixed(2)} m</div>
-        </div>
+      {/* Main 3D Simulation Panel */}
+      <div className="glass-panel sim-panel scan-effect">
         <Simulation3D state={state} />
       </div>
 
-      {/* Right Panel - Dashboard */}
-      <div className="glass-panel right-panel custom-scrollbar">
-        <h2>Training Dashboard</h2>
-        <StatsDashboard state={state} />
-        
-        <h2 style={{ marginTop: '16px' }}>Neural Network</h2>
+      {/* Decision Panel (Live reasoning, RL inputs, scores) */}
+      <DecisionPanel state={state} />
+
+      {/* Sensor Feeds (Top Right) */}
+      <SensorFeeds state={state} />
+
+      {/* AI Perception Pipeline (Bottom Left) */}
+      <PerceptionPipeline state={state} />
+
+      {/* Neural Network Viz (Bottom Middle) */}
+      <div className="nn-panel glass-panel">
+        <h2>Neural Network</h2>
         <NeuralNetworkViz action={state.currentAction} isRunning={state.isRunning} />
-        
-        <div className="action-display">
-          Decision: {state.currentAction}
-        </div>
       </div>
 
-      {/* Bottom Panel - Logs and Charts */}
-      <div className="bottom-panel">
-        <div className="glass-panel" style={{ padding: '20px' }}>
-          <h2>Live Graphs</h2>
-          <Charts history={state.history} />
-        </div>
-        
-        <div className="glass-panel" style={{ padding: '20px' }}>
-          <h2>System Logs</h2>
-          <LogConsole logs={state.logs} />
-        </div>
+      {/* RL Dashboard Stats and Logs (Bottom Right) */}
+      <div className="dashboard-panel glass-panel custom-scrollbar">
+        <h2>RL Dashboard</h2>
+        <StatsDashboard state={state} />
+        <h2 style={{ marginTop: '12px' }}>System Logs</h2>
+        <LogConsole logs={state.logs} />
       </div>
+
     </div>
   );
 }
